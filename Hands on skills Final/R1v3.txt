@@ -1,0 +1,176 @@
+R1#show run
+Building configuration...
+
+
+Current configuration : 2167 bytes
+!
+! Last configuration change at 18:24:50 UTC Mon Nov 20 2017
+!
+version 15.5
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no platform punt-keepalive disable-kernel-core
+!
+hostname R1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+
+no ip domain lookup
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+license udi pid ISR4321/K9 sn FDO21081JNG
+!
+spanning-tree extend system-id
+!
+!
+redundancy
+ mode none
+!
+!
+!
+!
+!
+vlan internal allocation policy ascending
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback1
+ ip address 172.27.9.1 255.255.255.0
+!
+interface Loopback2
+ ip address 172.27.10.1 255.255.255.0
+!
+interface Loopback3
+ ip address 172.27.11.1 255.255.255.0
+!
+interface GigabitEthernet0/0/0
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface GigabitEthernet0/0/1
+ description over to the switch one ya
+ ip address 172.27.0.1 255.255.255.0
+ standby 1 ip 172.27.0.2
+ standby 1 priority 110
+ standby 1 preempt
+ negotiation auto
+!
+interface Serial0/1/0
+ description over to the router 2 dont ya know
+ bandwidth 128
+ ip address 172.27.123.1 255.255.255.252
+ ip ospf cost 7500
+ clock rate 125000
+!
+interface Serial0/1/1
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0
+ vrf forwarding Mgmt-intf
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router ospf 1
+ router-id 1.1.1.1
+ auto-cost reference-bandwidth 1000
+ area 1 range 172.27.8.0 255.255.252.0
+ passive-interface GigabitEthernet0/0/1
+ passive-interface Loopback1
+ passive-interface Loopback2
+ passive-interface Loopback3
+ network 172.27.0.0 0.0.0.255 area 0
+ network 172.27.9.0 0.0.0.255 area 1
+ network 172.27.10.0 0.0.0.255 area 1
+ network 172.27.11.0 0.0.0.255 area 1
+ network 172.27.123.0 0.0.0.3 area 0
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+ip tftp source-interface GigabitEthernet0
+!
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ login
+!
+!
+end
+
+R1#
