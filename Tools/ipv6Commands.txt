@@ -1,0 +1,430 @@
+Cisco IPv6 Configuration Commands:
+6 March 2006
+
+Basic Commands:
+
+To enable routing of IPv6 packets – required to enable IPv6 on a router:
+Router(config)# ipv6 unicast-routing
+
+To enable IPv6 on an interface:
+Router(config-if)# ipv6 enable
+
+To add an IPv6 address to an interface:
+ipv6 address <address>/<prefix> [link-local] [eui-64]
+
+To leave the interface unnumbered:
+ipv6 unnumbered eth 0/0
+
+IPv6 Enabled Commands:
+ping ipv6 <ipv6adr>
+traceroute ipv6 <ipv6adr>
+telnet <ipv6adr>
+ssh [-l <userid>] [-c <des|3des>] [-o numberofpasswdprompts <#>] [-p <port#>] <ipv6addr> [command]
+show ip ssh
+ip http server
+dns lookup
+tftp
+
+Neighbor Discovery:
+
+To adjust the Router Advertisement intervals:
+ipv6 nc reachable-time <#>
+ipv6 nd ra-interval <#>		default is 200 seconds
+ipv6 nd ra-lifetime <#>		default is 1800 seconds (30 minutes)
+ipv6 nd ns-interval <#>		default is 1000 milliseconds
+ipv6 nd suppress-ra
+ipv6 nd managed-config-flag
+ipv6 nd other-config-flag
+
+To adjust the lifetimes for the prefix:
+ipv6 nd prefix-advertisement <routing-prefix>/<length> <valid-lifetime> <preferred-lifetime> [onlink] [auto-config]
+ipv6 nd prefix-advertisement FEC0::C0A8:20C0/123 0 0 autoconfig
+Valid lifetime = how long the node’s address remains in the valid state – after that it is invalid
+Preferred lifetime = how long the stateless autoconfig address remains preferred – less than or equal to the valid lifetime - If preferred-lifetime = 0 then this router is not preferred
+Off-link = sets the L-bit to OFF – default setting is to have the L-bit set to ON
+No-autoconifg = sets the A-bit to OFF – default setting is to have the A-bit set to ON
+No-advertise = the specified prefix cannot be used for stateless autoconfiguration – the prefix is not included in RA messages – default is to have this flag turned OFF
+
+To remove an advertised prefix:
+no ipv6 nd prefix <ipv6-prefix>
+
+To turn off Router Advertisements:
+no suppress-ra
+
+
+Duplicate Address Detection (DAD):
+ipv6 nd dad attempts <#>		disabled with a setting of “0”
+
+
+Router Redirection:
+ipv6 redirects
+ipv6 icmp error-interval msec
+
+Other Commands:
+
+ip domain lookup
+
+ip name-server <ipv6addr>
+
+ipv6 host <NAME> [<port>] <ipv6addr1> <ipv6addr2> . . .
+
+ipv6 neighbor <ipv6addr> Ethernet 0 <macaddr>
+
+Basic Show Commands:
+
+show ipv6 ?
+show ipv6 interface <interface-name-number> [prefix]
+show interface
+show ipv6 neighbors [ <ipv6addr-or-name> | <interfacetype-number> ]
+show ipv6 mtu
+show ipv6 protocols
+show ipv6 interface [brief]
+show ipv6 traffic
+show ipv6 route
+show ipv6 routers
+show bgp 
+show bgp summary
+show bgp ipv6 unicast neighbor <addr> routes
+show bgp ipv6 unicast neighbor <addr> advertised
+
+Basic Debug Commands:
+
+debug ipv6 ?
+debug ipv6 packet
+debug ipv6 icmp
+debug ipv6 nd
+
+ping ipv6 <ipv6addr>
+traceroute ipv6 <ipv6addr>
+
+clear ipv6 ?
+clear ipv6 neighbors
+
+
+Cisco Express Forwarding:
+
+ipv6 cef
+ipv6 cef distributed
+
+show ipv6 cef . . .
+show cef
+
+debug ipv6 cef [drops | events | hash | receive | table]
+
+Routing Commands:
+
+ipv6 route <ipv6prefix>/<prefix-length> [ <next-hop-IPv6-addr> | <interface-type-#> ] [AD#]
+
+show ipv6 route [connected | local | static | rip | bgp | isis | ospf]
+show ipv6 route <ipv6prefix>/<prefix-length>
+
+
+RIPng:
+
+To enable RIPng:
+Router(config)# ipv6 router rip <TAG>
+
+To enable RIPng on an interface:
+Router(config-if)# ipv6 rip <TAG> enable
+
+To originate the default router (::/0) out an interface:
+Router(config-if)# ipv6 rip <TAG> default-information originate
+
+Router(config-rtr)# distance <#>
+Router(config-rtr)# distribute-list prefix-list <prefixlistNAME> [in | out] <interface>
+Router(config-rtr)# metric-offset <#>
+Router(config-rtr)# poison-reverse
+Router(config-rtr)# split-horizon
+Router(config-rtr)# port <UDP-port> multicast-group <mcastaddr>
+Router(config-rtr)# timers <update> <expire> <holddown> <garbage-collect>
+Router(config-rtr)# redistribute [ connected | isis | ospf | static | bgp | rip <TAG> ] [metric <metric>] [level-1 | level-1-2 | level-2] [route-map <NAME>]
+
+RIPng Show Commands:
+
+show ipv6 route
+show ipv6 rip [database] [next-hops]
+show ipv6 protocols
+
+RIPng Debug Commands:
+
+debug ipv6 rip <interface>
+debug ipv6 routing
+
+clear ipv6 rip <TAG>
+
+
+OSPF Commands:
+
+Router(config)# ipv6 router ospf <process-ID>
+Router(config-rtr)# router-ID <ipv4addr>
+Router(config-rtr)# area <v4areaID> range <ipv6addr/length>
+
+Router(config)# interface ethernet 0
+Router(config-if)# ipv6 ospf <process-ID> area <v4areaID>
+
+Router(config-rtr)# redistribute [bgp | isis | rip | static]
+
+OSPF Show Commands:
+
+show ipv6 ospf <processID>
+show ipv6 ospf database
+show ipv6 ospf <processID> database link
+show ipv6 ospf <processID> database prefix
+show ipv6 ospf route ospf
+
+OSPF Debug Commands:
+
+clear ipv6 ospf <processID>
+
+OSPF Example:
+
+interface Ethernet 0
+ ipv6 address 2001:100:1::1/64
+ ipv6 enable 
+ ipv6 ospf 100 area 0
+interface Ethernet 1
+ ipv6 address 2001:200:2::1/64
+ ipv6 enable
+ ipv6 ospf 100 area 1
+ipv6 router ospf 100
+ router-id 10.1.1.1
+ area 1 range 2001:200:FFFF:1::1/64
+
+EIGRP Commands:
+
+interface FastEthernet 0/0
+ ipv6 enable 
+ ipv6 eigrp 10
+ipv6 bandwidth-percent eigrp <as-number> <percent>
+ipv6 summary-address eigrp <as-number> <ipv6-address> [admin-distance] 
+ipv6 authentication mode eigrp <as-number> md5 
+ipv6 authentication key-chain eigrp <as-number> <key-chain>
+! 
+ipv6 router eigrp 10 
+ eigrp router-id 10.1.1.1 
+ stub [receive-only | connected | static | summary | redistributed] 
+ log-neighbor-changes 
+ log-neighbor-warnings [seconds] 
+ metric weights tos k1 k2 k3 k4 k5 
+!
+show ipv6 eigrp interfaces 
+show ipv6 eigrp neighbors detail 
+show ipv6 eigrp topology 
+show ipv6 eigrp traffic
+
+clear ipv6 eigrp [as-number] [neighbor [ipv6-address | interface-type interface-number]] 
+
+debug eigrp fsm 
+debug eigrp neighbor [siatimer] [static] 
+debug eigrp packet 
+debug eigrp transmit [ack] [build] [detail] [link] [packetize] [peerdown] [sia] [startup] [strange] 
+debug ipv6 eigrp [as-number] [neighbor ipv6-address | notification | summary]
+
+BGP4+ Commands:
+
+Enable BGP-4 on the router:
+router bgp <ASN>
+
+Turns off BGP IPv4 peering
+no bgp default ipv4 unicast
+
+Establish a BGP4+ neighbor:
+neighbor <ipv6addr> remote-as <ASN>
+neighbor <ipv6addr> update-source <interface>
+neighbor <ipv6addr> soft-reconfiguration inbound
+neighbor <ipv6addr> password 5 <password>
+
+Address Families:
+address-family ipv6 unicast …
+neighbor <ipv6addr> activate
+exit-address-family
+
+To enable a prefix-list for a BGP-peer:
+neighbor <ipv6addr> prefix-list <NAME> [in | out]
+ipv6 prefix-list <NAME> [ seq [#] ] [ permit | deny ] <IPv6prefix/length> [ ge <min-value> ] [ le <max-value> ]
+
+Route Maps:
+neighbor <ipv6addr> route-map <NAME> [in|out]
+route-map <NAME> [ permit | deny ] <seq#>
+ match ipv6 [<ipv6addr> | next-hop | route-source] prefix-list <prefixlistNAME>
+ set ipv6 next-hop <ipv6addr> <link-local-addr>
+ set local-pref 120
+
+Redistribution:
+redistribute [bgp | connected | isis | ospf | rip | static] [metric <metric>] [route-map <routemapNAME>]
+
+BGP4+ Show Commands:
+
+show ipv6 route bgp
+show ipv6 neighbors
+show bgp neighbors
+show bgp ipv6 [summary]
+show bgp ipv6 [<ipv6prefix/length> | community | community-list | dampened-paths | regexp <regexp> | summary ]
+show ipv6 prefix-list [summary | detail] <prefixlistNAME>
+
+BGP4+ Debug Commands:
+
+debug bgp ipv6
+
+clear bgp ipv6 [ * | ASN | <ipv6addr> | dampening | external | flap-statistics | <peer-group-name> ]
+
+BGP4+ Example:
+
+interface Ethernet0
+ipv6 address 5f00:0100:0:0:1::1 80
+!
+router bgp 100
+no bgp default ipv4-unicast
+neighbor 5f00:0100:0:0:2::1 remote-as 101
+aggregate-address 2001:420:2000::/42 summary-only
+!
+address-family ipv6
+neighbor 5f00:0100:0:0:2::1 activate
+neighbor 5f00:0100:0:0:2::1 prefix-list bgp-in in
+neighbor 5f00:0100:0:0:2::1 prefix-list aggregate out
+network 5f00:0100:0:0:1::/40
+exit-address-family
+ipv6 prefix-list aggregate seq 5 deny 3FFE:C00::/24 ge 25
+ipv6 prefix-list aggregate seq 10 permit ::/0 le 48
+!
+ipv6 prefix-list bgp-in seq 5 deny 5F00::/8 le 128
+ipv6 prefix-list bgp-in seq 10 deny ::/0
+ipv6 prefix-list bgp-in seq 15 deny ::/1
+ipv6 prefix-list bgp-in seq 20 deny ::/2
+ipv6 prefix-list bgp-in seq 25 deny ::/3 ge 4
+ipv6 prefix-list bgp-in seq 30 permit ::/0 le 128
+
+IPv6 Access Control Lists:
+
+ipv6 access-list <NAME> [permit|deny] <src-prefix[*]> | any | host <hostip> … <dest-prefix[*]> | any | host <hostip> … [log | log-input]
+
+ipv6 access-list BLAH deny fec0:0:0:2::/64 * any
+ipv6 access-list BLAH permit any
+
+Apply ACL to an interface:
+Router(config-if)# ipv6 traffic-filter <ACL-NAME> [in | out]
+
+For 6Bone – minimum prefix to announce:
+3ffe::/16
+3ffe:0800::/28
+2000::/3		- 6to4
+
+For 6Bone – prohibits advertisements of these:
+fe80::/10		- link local
+fec0::/10		- site local
+::1/128		- loopback
+::0/128		- default route
+ff00::/8		- multicast
+::/96		- ipv4 compatible addresses
+::ffff/96		- ipv4 mapped addresses
+
+View the ACLs:
+show ipv6 access-list <ACL-MANE>
+
+clear ipv6 access-list <ACL-NAME>
+
+debug ipv6 packet [access-list <ACL-NAME>] [detail]
+
+Configured Tunnel Router Commands:
+
+Router 1:
+interface tunnel 0
+ ipv6 address 3ffe:b00:c18:1::3/27
+ tunnel source 192.168.1.1
+ tunnel destination 192.168.2.1
+ tunnel mode ipv6ip [auto-tunnel]
+
+Auto-tunnel if used for automatic tunnels
+
+Router 2:
+interface tunnel 0
+ ipv6 address 3ffe:b00:c18:1::2/27
+ tunnel source 192.168.2.1
+ tunnel destination 192.168.1.1
+ tunnel mode ipv6ip [auto-tunnel]
+
+
+6to4 Tunnel Router Commands:
+
+
+Router 1:
+interface Ethernet 0
+ ip address 192.168.1.1 255.255.255.0
+ ipv6 address 2002:c0a8:0101:1::/64 eui-64
+interface tunnel 0
+ no ip address
+ ipv6 unnumbered Ethernet 0
+ tunnel source Ethernet 0
+ tunnel destination 192.168.2.1
+ tunnel mode ipv6ip 6to4
+
+Router 2:
+interface Ethernet 0
+ ip address 192.168.2.1 255.255.255.0
+ ipv6 address 2002:c0a8:0201:1::/64 eui-64
+interface tunnel 0
+ no ip address
+ ipv6 unnumbered Ethernet 0
+ tunnel source Ethernet 0
+ tunnel destination 192.168.2.1
+ tunnel mode ipv6ip 6to4
+
+For a 6to4 Relay add the following route:
+ipv6 route ::/0 <ipv6addr of 6to4 relay>
+
+
+
+2 Router Example:
+
+hostname Alpha
+ipv6 unicast-routing
+interface Ethernet0
+ description connected to A-LAN
+ no ip address
+ no ip directed-broadcast
+ ipv6 enable
+ ipv6 address FEC0::C0A8:20C1/123
+ ipv6 nd ra-interval 20
+ ipv6 nd ra-lifetime 180
+ ipv6 rip brest-lab enable
+interface Serial1
+ description connected to Chi Ser1
+ bandwidth 4000000
+ no ip address
+ no ip directed-broadcast
+ encapsulation ppp
+ ipv6 enable
+ ipv6 address FEC0::C0A8:2025/126
+ ipv6 nd ra-interval 20
+ ipv6 nd ra-lifetime 180
+ ipv6 nd prefix-advertisement FEC0::C0A8:20C0/123 0 0 autoconfig
+ no suppress-ra
+ ipv6 rip brest-lab enable
+ clockrate 4000000
+
+hostname Chi
+ipv6 unicast-routing
+interface Ethernet0
+ description connected to Core-LAN
+ no ip address
+ no ip directed-broadcast
+ ipv6 enable
+ ipv6 address FEC0::C0A8:10C2/123
+ ipv6 nd ra-interval 20
+ ipv6 nd ra-lifetime 180
+ ipv6 rip brest-lab enable
+interface Serial1
+ description connected to Alpha Ser1
+ bandwidth 4000000
+ no ip address
+ no ip directed-broadcast
+ encapsulation ppp
+ ipv6 enable
+ ipv6 address FEC0::C0A8:2026/126
+ ipv6 nd ra-interval 20
+ ipv6 nd ra-lifetime 180
+ ipv6 nd prefix-advertisement FEC0::C0A8:10C0/123 0 0 autoconfig
+ no suppress-ra
+ ipv6 rip brest-lab enable 
+
+
