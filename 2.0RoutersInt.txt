@@ -1,0 +1,70 @@
+Routers
+R1
+int g0/0
+ip address x.x.8.1 255.255.255.0
+descr over to Manage-1A
+no shut
+
+int s0/0/0
+no shut
+bandwidth 128
+clock rate 128000
+ip address x.x.100.22 255.255.255.252
+descr over to xxxxxxx
+
+int g0/1
+ip address x.x.9.1 255.255.255.0
+descr over to xxxxxxxxx
+no shut
+
+
+
+
+R2
+ip route 0.0.0.0 0.0.0.0 s0/1/0
+int s 0/0/0
+bandwidth 128
+ip address x.x.100.21 255.255.255.252
+descr over to 2-East
+no shut
+
+int s0/0/1
+bandwidth 128
+ip address x.x.100.37 255.255.255.252
+descr over to 2-West
+clock rate 128000
+no shut
+
+int s0/1/0
+bandwidth 128
+ip address 203.0.113.xx 255.255.255.248
+descr over to 2-INTERNET
+no shut
+
+
+R3
+int serial 0/0/1
+bandwidth 128
+ip address x.x.100.38 255.255.255.252
+descr over to 2-Central
+no shut
+
+int g0/1
+no shut
+int g0/1.2
+encapsulation dot1q 2
+ip address 10.10.2.1 255.255.255.0
+int g0/1.4
+encapsulation dot1q 4
+ip address 10.10.4.1 255.255.255.0
+int g0/1.8
+encapsulation dot1q 8
+ip address 10.10.8.1 255.255.255.0
+int g0/1.15
+encapsulation dot1q 15
+ip address 10.10.15.1 255.255.255.0
+int g0/1.25
+encapsulation dot1q 25
+ip address 10.10.25.1 255.255.255.0
+exit
+

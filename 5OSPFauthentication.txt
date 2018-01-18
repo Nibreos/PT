@@ -1,0 +1,27 @@
+OSPF authentication
+
+
+R1 int s0/0/0
+ip ospf cost 7500
+ip ospf message-digest-key 1 md5 xyz_OSPF
+ip ospf authentication message-digest
+no shut (just in case)
+
+
+R2 int s0/0/0
+ip ospf cost 7500
+ip ospf message-digest-key 1 md5 xyz_OSPF
+ip ospf authentication message-digest
+no shut (just in case)
+
+
+int s0/0/01
+ip ospf message-digest-key 1 md5 xyz_OSPF
+ip ospf authentication message-digest
+
+
+R3
+int s0/0/1
+ip ospf message-digest-key 1 md5 xyz_OSPF
+ip ospf authentication message-digest
+

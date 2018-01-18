@@ -1,0 +1,56 @@
+Vlans
+SW1
+
+vlan 2
+name dept1
+vlan 4
+name dept2
+vlan 8
+name dept3
+vlan 15
+name NetAdmin
+vlan 25
+name manage
+vlan 99
+name safe
+int vlan 25
+ip address 10.10.25.254 255.255.255.0
+no shut
+
+
+SW2
+
+vlan 2
+name dept1
+vlan 4
+name dept2
+vlan 8
+name dept3
+vlan 15
+name NetAdmin
+vlan 25
+name manage
+vlan 99
+name safe
+int vlan 25
+ip address 10.10.25.253 255.255.255.0
+no shut
+
+SW3
+
+vlan 2
+name dept1
+vlan 4
+name dept2
+vlan 8
+name dept3
+vlan 15
+name NetAdmin
+vlan 25
+name manage
+vlan 99
+name safe
+int vlan 25
+ip address 10.10.25.252 255.255.255.0
+no shut
+

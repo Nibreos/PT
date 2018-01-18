@@ -1,0 +1,16 @@
+Basic config
+en
+conf t
+hostname
+banner motd #Unauthorized access is prohibited!#
+no ip domain lookup
+line vty 0 15 password cisco
+login
+line con 0
+logging synchronous
+password cisco
+login
+exit
+enable secret class
+service password-encryption
+

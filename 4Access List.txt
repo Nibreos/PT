@@ -1,0 +1,39 @@
+Access list
+
+R2-main?
+exit
+ip accesss-list standard telnetBlock
+permit host 198.51.100.5x x x x x x x xx 
+accesss-list 101 permit icmp 198.51.100.5 0.0.0.0 any echo
+accesss-list 101 deny icmp any any echo
+accesss-list 101 permit ip any any
+line vty 0 15
+accesss-class telnetBlock in
+int s0/1/0
+ip accesss-group 101 in
+exit
+
+
+
+R3
+int serial 0/0/1
+ip summary-address eigrp 100 10.10.0.0 255.255.240.0
+ip dhcp excluded-address 10.10.2.1 10.10.2.5
+ip dhcp excluded-address 10.10.4.1 10.10.4.5
+ip dhcp excluded-address 10.10.8.1 10.10.8.5
+ip dhcp pool vlan2pool
+network 10.10.2.0 255.255.255.0
+default-router 10.10.2.1
+dns-server x.x.200.225
+ip dhcp pool vlan4pool
+network 10.10.4.0 255.255.255.0
+default-router 10.10.4.1
+dns-server x.x.200.225
+ip dhcp pool vlan8pool
+network 10.10.8.0 255.255.255.0
+default-router 10.10.8.1
+dns-server x.x.200.225
+exit
+accesss-list 1 permit 10.10.15.0 0.0.0.255
+int gi0/1.25
+ip accesss-group 1 out

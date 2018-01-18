@@ -1,0 +1,120 @@
+Switches
+
+SW1
+refer basic config1 minus aux
+
+
+
+ip default-gateway 10.10.25.1
+vlans txt
+
+int range fa0/5,f0/10,f0/15,f0/24 :
+
+int fa0/5
+switchport mode access
+switchport access vlan 2
+int fa0/10
+switchport mode access
+switchport access vlan 4
+int fa0/15
+switchport mode access
+switchport access vlan 8
+int fa0/24
+switchport mode access
+switchport access vlan 15
+int range fa0/6-9,f0/11-14,f0/16-23
+switchport mode access
+switchport access vlan 99
+shut
+int range g0/1-2
+switchport mode access
+switchport access vlan 99
+shut
+int range fa0/1-2
+channel-group 1 mode active
+int port-channel 1
+switchport mode trunk
+int range fa0/3-4
+channel-group 2 mode active
+int port-channel 2
+switchport mode trunk
+exit
+spanning-tree mode rapid-pvst
+spanning-tree vlan 2 root primary
+spanning-tree vlan 4 root primary
+spanning-tree vlan 8 root secondary
+spanning-tree vlan 15 root secondary
+
+
+
+
+
+
+
+
+S2
+refer basic config minus  + special ssh
+ip ssh version 2
+ip domain-name ccnaPTSA.com
+crypto key generate rsa
+1024
+username netadmin secret SSHsecret9
+line vty 0 4
+login local
+transport input ssh
+line vty 5 15
+login local
+transport input ssh
+ip default-gateway 10.10.25.1
+
+int g0/1
+switchport mode trunk
+int range fa0/3-4
+channel-group 2 mode active
+int port-channel 2
+switchport mode trunk
+int range fa0/5-6
+channel-group 3 mode active
+int port-channel 3
+switchport mode trunk
+spanning-tree mode rapid-pvst
+
+
+
+
+SW3
+refer basic config minus aux
+
+ip default-gateway 10.10.25.1
+
+int fa0/7
+switchport mode access
+switchport access vlan 2
+int fa0/10
+switchport mode access
+switchport access vlan 4
+int fa0/15
+switchport mode access
+switchport access vlan 8
+int fa0/24
+switchport mode access
+switchport access vlan 15
+int range fa0/1-2
+channel-group 1 mode active
+no shut
+int port-channel 1
+switchport mode trunk
+int range fa0/5-6
+channel-group 3 mode passive
+no shut
+int port-channel 3
+switchport mode trunk
+spanning-tree mode rapid-pvst
+spanning-tree vlan 2 root secondary
+spanning-tree vlan 4 root secondary
+spanning-tree vlan 8 root primary
+spanning-tree vlan 15 root primary
+int range fa0/7, fa0/10, fa0/15, fa0/24
+spanning-tree portfast
+spanning-tree bpduguard enable
+no shut
